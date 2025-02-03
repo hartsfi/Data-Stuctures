@@ -10,8 +10,6 @@ class Game {
 
 		int teamOneScore;
 		int teamTwoScore;
-		Player Team_One[5];
-		Player Team_Two[5];
 		string possesion;
 
 	public:
@@ -30,6 +28,5 @@ class Game {
 			return possesion;
 		}
 
-		void setTeamNames();
 
 };

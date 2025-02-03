@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 #include <cstdlib> 
-#include <ctime>
 using namespace std;
 
 class Player {
@@ -19,8 +18,6 @@ class Player {
 
 		Player(string name);
 
-		Player();
-
 		bool PassBall();
 
 		int TakeShot(int point);
@@ -32,10 +29,6 @@ class Player {
 		void addPassAttempted();
 
 		void addPassMade();
-
-		void setName(string newName) {
-			name = newName;
-		}
 
 		string getName() {
 			return name;
@@ -57,7 +50,4 @@ class Player {
 			return passesMade;
 		}
 
-
 };
-
-bool retainPossesion();
