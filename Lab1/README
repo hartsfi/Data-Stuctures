@@ -1,1 +1,68 @@
+Data Structures (2028C) -- Spring 2025 – Lab 1
+Topics covered: IDE, Debugging, Arrays and Structs
+Lab due: Sunday, Jan 26 at 11:55PM for Monday Section
+Tuesday, Jan 28 at 11:55 PM for Wednesday Section
+
+Objective:
+The objective of this homework is to get familiar with the editing and compilation
+environment, modify a simple C++ program, design a Struct and implement it in a C++
+program, and submit to the lab instructor.
+
+Task 1: Familiarize yourself with the IDE.
+1. Download and install the IDE of your choice. My recommendation is Visual Studio.
+The community edition is located at https://www.visualstudio.com/downloads/. Make
+sure you include the C++ language during the setup.
+2. Create a new project. You can name this whatever you like.
+3. Type in the code from Gaddis program 8-6 (page 482-484), compile and run the program.
+(you may choose to download the code from
+http://wps.pearsoned.com/ecs_gaddis_sowcpp_cs_8/244/62625/16032053.cw/index.html
+to save yourself some typing.
+4. Create a breakpoint on line 41 and step through the code until you have displayed two
+rows of products on the screen.
+5. Take a screen shot of the output screen and the IDE to include in your lab report.
+
+Task 2: Debugging.
+1. Create a new project.
+2. Copy the provided code from the file Lab1-Task2.cpp into your project.
+3. Compile and run the code.
+4. Your user has noted the following errors. Fix them.
+a. The division in the output is incorrect
+b. The amounts in the division are incorrect. One of the values is a really large
+negative number that looks like garbage.
+c. The total is 0 but it shouldn’t be.
+5. Submit the corrected source code and include a screen shot of the output in your lab
+report.
+
+Task 3: Structures.
+1. Reuse the project from task 1.
+2. Create a structure to replace the 4 arrays in the program (id, units, prices, sales).
+3. Modify the code in the main function to have a single products array of type defined in
+step 2.
+4. Modify the code in the rest of the program to use the single products array rather than the
+4 original arrays.
+5. Submit your working (meaning you tested and removed all bugs) code and include a
+screen shot of the output in your lab report.
+
+Lab Submission:
+1. Write a lab report including the following information:
+a. A description of the objectives/concepts explored in this assignment including
+why you think they are important to this course and a career in CS and/or
+Engineering. Include screen shot(s) from Task 1.
+b. A description of how you approached debugging Task 2, why you think a
+programmer may have made the mistakes and how you think they can be avoided
+in the future. Include screen shot(s) from Task 2.
+c. A description of what you had to do in Task 3 including any bugs you may have
+introduced and had to fix. Include screen shot(s) from Task 3.
+2. Include all source code from Tasks 2 and 3 as well as any special instructions to compile
+and run those programs.
+3. Package all files in a single zip folder and submit to Canvas.
+
+Lab Grading:
+1. 20% - Lab attendance
+2. 30% - Task 2 has been correctly debugged and is displaying the correct output.
+3. 30% - Task 3 has been correctly converted to uses a single array of structures
+instead of multiple arrays and is displaying the correct output.
+4. 20% - Lab report contains all required information and is well written.
+If program fails to compile only 0% will be given for that Task.
+Annotations
 
