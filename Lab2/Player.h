@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <cstdlib> 
+#include <ctime>
 using namespace std;
 
 class Player {
@@ -9,6 +10,7 @@ class Player {
 	private:
 
 		string name;
+		bool hasPossession;
 		int shotsTaken;
 		int shotsMade;
 		int passesAttempted;
@@ -17,6 +19,8 @@ class Player {
 	public:
 
 		Player(string name);
+
+		Player();
 
 		bool PassBall();
 
@@ -29,6 +33,20 @@ class Player {
 		void addPassAttempted();
 
 		void addPassMade();
+		
+		void printStats() const;
+
+		void setName(string newName) {
+			name = newName;
+		}
+
+		void setHasPossession() {
+			hasPossession = true;
+		}
+
+		void removeHasPossession() {
+			hasPossession = false;
+		}
 
 		string getName() {
 			return name;
@@ -50,4 +68,25 @@ class Player {
 			return passesMade;
 		}
 
+		bool getPossessionStatus() {
+			return hasPossession;
+		}
+
+		int playOpposingTeamPossession();
+
 };
+
+bool retainPossession();
+
+void setTeamNames(Player Team_One[]);
+
+int chooseRandomPlayer();
+
+Player& findPlayerWithPossession(Player Team[]);
+
+void printWholeTeamStats(Player Team[]);
+
+void assignNewPossession(Player Team[]);
+
+void resetAllPossessions(Player Team[]);
+
