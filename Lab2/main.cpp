@@ -13,11 +13,9 @@ int main() {
 
 	Team_One[chooseRandomPlayer()].setHasPossession();
 
-	Player& current_player = findPlayerWithPossession(Team_One);
+	cout << "\nPlayer with Possession: " << findPlayerWithPossession(Team_One).getName() << "\n" << endl;
 
-	cout << "\nPlayer with Possession: " << current_player.getName() << endl;
-
-	while (Current_Game.getNumPossessions() != 0) {
+	while (Current_Game.getNumPossessions() > 0) {
 		
 		cout << "Choose an action:\n"
 			<< "1. Shoot\n"
@@ -27,6 +25,7 @@ int main() {
 
 		int choice;
 		cin >> choice;
+		cout << "\n";
 
 		switch (choice) {
 
@@ -36,8 +35,9 @@ int main() {
 				cout << "Enter Shot Value (1, 2, or 3): ";
 				
 				cin >> shotValue;
+				cout << "\n" << endl;
 				
-				Current_Game.addToTeamOne(current_player.TakeShot(shotValue));
+				Current_Game.addToTeamOne(findPlayerWithPossession(Team_One).TakeShot(shotValue));
 
 				Current_Game.endOfPossession();
 
@@ -47,33 +47,24 @@ int main() {
 
 				assignNewPossession(Team_One);
 
-				Current_Game.printScores();
-
 				break;
 			}
 			case 2: {
 
-				//choose player to pass
-
 				for (int i = 0; i < 5; i++) {
-					cout << i + 1 << ". " << Team_One[i].getName() << endl;;
-					cout << "\n";
+					cout << i + 1 << ". " << Team_One[i].getName() << endl;
 				}
 
 				int playerToPass;
 				cin >> playerToPass;
 
-				if (current_player.PassBall()) {
+				if (findPlayerWithPossession(Team_One).PassBall()) {
 
 					resetAllPossessions(Team_One);
 
-					current_player.removeHasPossession();
-
 					Team_One[playerToPass - 1].setHasPossession();
 
-					current_player = Team_One[playerToPass - 1];
-
-					cout << current_player.getName() << " now has possession!" << endl;
+					cout << findPlayerWithPossession(Team_One).getName() << " now has possession!\n" << endl;
 				}
 				else {
 
@@ -85,7 +76,6 @@ int main() {
 
 					assignNewPossession(Team_One);
 
-					Current_Game.printScores();
 				}
 				break;
 			}
@@ -98,16 +88,37 @@ int main() {
 			}
 			case 4: {
 
+				Current_Game.printScores();
+
+				break;
 			}
 			default: {
+
+				cout << "Invalid Choice\n" << endl;
+				break;
 
 			}
 		}
 
-		
-
 	}
-	
+
+	int teamOneFinalScore = Current_Game.getTeamOneScore();
+
+	int teamTwoFinalScore = Current_Game.getTeamTwoScore();
+
+	cout << "\n---GAME OVER---!\n" << endl;
+
+	cout << "Final Score: " << teamOneFinalScore << " - " << teamTwoFinalScore << "\n" << endl;
+
+	if (teamOneFinalScore > teamTwoFinalScore) {
+		cout << "Team One Wins!" << endl;
+	}
+	else if (teamOneFinalScore == teamTwoFinalScore) {
+		cout << "Both Teams Tied!" << endl;
+	}
+	else {
+		cout << "Team Two Wins!" << endl;
+	}
 
 	return 0;
 }
