@@ -1,7 +1,6 @@
 #include "Player.h"
 using namespace std;
 
-//Constructors
 Player::Player(string playerName) : name(playerName), hasPossession(false), shotsTaken(0), shotsMade(0), passesAttempted(0), passesMade(0) {}
 
 Player::Player() : name("None"), hasPossession(false), shotsTaken(0), shotsMade(0), passesAttempted(0), passesMade(0) {}
@@ -15,7 +14,7 @@ bool Player::PassBall() {
 		passingPercentage = 50;
 	}
 	else {
-		passingPercentage = (passesMade / passesAttempted) * 100;
+		passingPercentage = (static_cast<double>(passesMade) / passesAttempted) * 100;
 	}
 	
 	int randomNumber = (rand() % 100) + 1;
@@ -25,7 +24,7 @@ bool Player::PassBall() {
 		passesMade++;
 		passesAttempted++;
 
-		cout << "Pass Successful" << endl;
+		cout << "Pass Successful!\n" << endl;
 
 		return true;
 	}
@@ -33,7 +32,7 @@ bool Player::PassBall() {
 
 		passesAttempted++;
 
-		cout << "Pass Unsuccessful" << endl;
+		cout << "Pass Unsuccessful!\n" << endl;
 
 		return false;
 	}
@@ -73,25 +72,22 @@ int Player::TakeShot(int point) {
 
 		if (randomNumber <= shootingPercentage) {
 			shotsMade++;
-			cout << point << "points!" << endl; 
+			cout << point << " points!\n";
 			return point; 
 		}
 		else if (!retainPossession()) {
 			retainBallPossession = false;
-			cout << "Shot Missed and Possession Lost!" << endl;
+			cout << "Shot Missed and Possession Lost!\n" << endl;
 		}
-		else { cout << "Shot Missed and Possession Won Back!" << endl; }
+		else { cout << "Shot Missed and Possession Won Back!\n" << endl; }
 	}
 
 	return 0;
 }
 
-//Returns true if player maintains possesion after missed shot
 bool retainPossession() {
 
 	int randomNumber = (rand() % 100) + 1;
-
-	cout << randomNumber << endl;
 
 	if (randomNumber > 50) {
 		return true;
@@ -157,22 +153,19 @@ int Player::playOpposingTeamPossession() {
 
 		int randomPoint = rand() % 3 + 1;
 		int randomNumber = rand() % 100 + 1;
-		double defaultShotPercent;
 
 		double shootingPercentage = 60.0;
 
-		cout << randomNumber << endl;
-
 		if (randomNumber <= shootingPercentage) {
 
-			cout << "Opposing Team Scored " << randomPoint << " Points!" << endl;
+			cout << "Opposing Team Scored " << randomPoint << " Points!\n" << endl;
 			return randomPoint;
 		}
 		else if (!retainPossession()) {
 			retainBallPossession = false;
-			cout << "Opposing Team Shot Missed and Possession Lost!" << endl;
+			cout << "Opposing Team Shot Missed and Possession Lost!\n" << endl;
 		}
-		else { cout << "Opposing Team Shot Missed and Possession Won Back!" << endl; }
+		else { cout << "Opposing Team Shot Missed and Possession Won Back!\n" << endl; }
 	}
 
 	return 0;
