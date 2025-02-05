@@ -10,7 +10,7 @@ class Game {
 
 		int teamOneScore;
 		int teamTwoScore;
-		string possesion;
+		int numPossessions;
 
 	public:
 
@@ -24,9 +24,23 @@ class Game {
 			return teamTwoScore;
 		}
 
-		string getPossesion() {
-			return possesion;
+		int getNumPossessions() {
+			return numPossessions;
 		}
 
+		void endOfPossession() {
+			numPossessions--;
+		}
+
+		void addToTeamOne(int point) {
+			teamOneScore += point;
+		}
+
+		void addToTeamTwo(int point) {
+			teamTwoScore += point;
+		}
+
+		void printScores();
 
 };
+
