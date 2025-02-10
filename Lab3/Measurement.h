@@ -33,7 +33,6 @@ public:
 	bool operator ==(Measurement measurement);
 	void operator +=(Measurement measurement);
 	void operator -=(Measurement measurement);
-	void operator <<(Measurement measurement);
 	friend ostream& operator<<(ostream& os, const Measurement& measurement);
 
 };
