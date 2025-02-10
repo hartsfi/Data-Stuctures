@@ -38,36 +38,35 @@ void Measurement::simplifyMeasurement() {
 
 };
 
-//Overload for == to check if measurement instances are equal
+//Overload for == 
 bool Measurement::operator ==(Measurement measurement) {
 
-	Measurement tempL = *this;
-	Measurement tempR = measurement;
+	this->convertToLittles();
+	measurement.convertToLittles();
 
-	tempL.convertToLittles();
-	tempR.convertToLittles();
+	bool isEqual = (this->little == measurement.little);
 
-	bool isEqual = (tempL.little == tempR.little);
-
-	tempL.convertFromLittles();
-	tempR.convertFromLittles();
+	this->convertFromLittles();
+	measurement.convertFromLittles();
 
 	return isEqual;
 };
 
-//Overload for += to add two measurement instances (I wasn't sure if wwe should be using + or += versions of operators so theyll all use += for now)
-void Measurement::operator +=(Measurement measurement) {
-	
-	this->little += measurement.little;
-	this->lot += measurement.lot;
-	this->heap += measurement.heap;
+//Overload for +
+void Measurement::operator +(Measurement measurement) {
 
-	simplifyMeasurement();
+	this->convertToLittles();
+	measurement.convertToLittles();
+
+	this->little += measurement.little;
+
+	this->convertFromLittles();
+	measurement.convertFromLittles();
 
 };
 
-//Overload for -=
-void Measurement::operator -=(Measurement measurement) {
+//Overload for -
+void Measurement::operator -(Measurement measurement) {
 
 	this->convertToLittles();
 	measurement.convertToLittles();
@@ -79,7 +78,33 @@ void Measurement::operator -=(Measurement measurement) {
 
 };
 
-//Over load for cout << to print the measurements values
+//Overload for *
+void Measurement::operator *(Measurement measurement) {
+
+	this->convertToLittles();
+	measurement.convertToLittles();
+
+	this->little *= measurement.little;
+
+	this->convertFromLittles();
+	measurement.convertFromLittles();
+
+};
+
+//Overload for /
+void Measurement::operator /(Measurement measurement) {
+
+	this->convertToLittles();
+	measurement.convertToLittles();
+
+	this->little /= measurement.little;
+
+	this->convertFromLittles();
+	measurement.convertFromLittles();
+
+};
+
+//Overload for cout << to print the measurements values
 ostream& operator<<(ostream& os, const Measurement& measurement) {
 
 	Measurement temp = measurement;
