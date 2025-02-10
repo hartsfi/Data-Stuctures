@@ -8,6 +8,7 @@ Measurement::Measurement(int little, int lot, int heap) : little(little), lot(lo
 
 Measurement::Measurement(int little) : little(little), lot(0), heap(0) {}
 
+//Converts all values into littles (easier to compare and perform arithmatic)
 void Measurement::convertFromLittles() {
 
 	heap = (little / 7) / 23;
@@ -18,6 +19,7 @@ void Measurement::convertFromLittles() {
 
 };
 
+//Converts all the littles back into the simplified forms (I wrote a new simplitfy function that works better than this but ill leave it here)
 void Measurement::convertToLittles() {
 
 	little += (lot * 7) + (heap * 23 * 7);
@@ -28,6 +30,7 @@ void Measurement::convertToLittles() {
 
 };
 
+//Converts the measurement values to the simplified versions (Ex. (249, 2, 3) -> (4, 14, 4))
 void Measurement::simplifyMeasurement() {
 
 	convertToLittles();
@@ -35,6 +38,7 @@ void Measurement::simplifyMeasurement() {
 
 };
 
+//Overload for == to check if measurement instances are equal
 bool Measurement::operator ==(Measurement measurement) {
 
 	Measurement tempL = *this;
@@ -51,6 +55,7 @@ bool Measurement::operator ==(Measurement measurement) {
 	return isEqual;
 };
 
+//Overload for += to add two measurement instances (I wasn't sure if wwe should be using + or += versions of operators so theyll all use += for now)
 void Measurement::operator +=(Measurement measurement) {
 	
 	this->little += measurement.little;
@@ -61,6 +66,7 @@ void Measurement::operator +=(Measurement measurement) {
 
 };
 
+//Overload for -=
 void Measurement::operator -=(Measurement measurement) {
 
 	this->convertToLittles();
@@ -73,14 +79,7 @@ void Measurement::operator -=(Measurement measurement) {
 
 };
 
-void Measurement::operator <<(Measurement measurement) {
-
-	measurement.simplifyMeasurement();
-	
-	measurement.printMeasurement();
-
-}
-
+//Over load for cout << to print the measurements values
 ostream& operator<<(ostream& os, const Measurement& measurement) {
 
 	Measurement temp = measurement;
