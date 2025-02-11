@@ -3,81 +3,89 @@
 
 using namespace std;
 
-char choice;
-char operation;
+int main() {
 
-int main() {			
-choice = 'y'; 
-while (choice == 'y' || choice == 'Y') { 
+	char choice;
+	string operation;
+	int little1, lot1, heap1;
+	int little2, lot2, heap2;
+	cout << "+-----------------------------------------------+" << endl;
+	choice = 'y';
 
-int little1, lot1, heap1;
-int little2, lot2, heap2;
-cout << "Enter first measurement (little lot heap): ";
-cin >> little1;
-cin >> lot1;
-cin >> heap1;
-Measurement m1(little1, lot1, heap1);
+	while (choice == 'y' || choice == 'Y') {
+
+		cout << "\nEnter first measurement (little lot heap): " << endl;
+		cin >> little1;
+		cin >> lot1;
+		cin >> heap1;
+		cout << "\n+-----------------------------------------------+\n" << endl;
+		Measurement m1(little1, lot1, heap1);
+
+		cout << "Enter operation (+, -, *, /, ==): \n";
+		cin >> operation;
+		cout << "\n+-----------------------------------------------+\n" << endl;
 
 
-cout << "Enter second measurement (little lot heap): ";
-cin >> little2;
-cin >> lot2;
-cin >> heap2;
-Measurement m2(little2, lot2, heap2);
+		cout << "Enter second measurement (little lot heap): " << endl;
+		cin >> little2;
+		cin >> lot2;
+		cin >> heap2;
+		cout << "\n+-----------------------------------------------+\n" << endl;
+		Measurement m2(little2, lot2, heap2);
 
+		if (operation == "+") {
+			m1 + m2;
+			cout << "\nResult: (" << m1 << ") " << endl;
+		}
 
-cout << "Enter operation (+, -, *, /, ==): ";
-cin >> operation;
-if (operation == '+') {
-m1 + m2;
-cout << "Result: ";
-cout << m1;
-cout << endl;
-} 
+		else if (operation == "-") {
+			m1 - m2;
+			cout << "\nResult: (" << m1 << ") " << endl;
+		}
 
-else if (operation == '-') {
- m1 - m2;
-cout << "Result: ";
-cout << m1;
-cout << endl;
-} 
+		else if (operation == "*") {
+			m1* m2;
+			cout << "\nResult: (" << m1 << ") " << endl;
+		}
 
-else if (operation == '*') {
-m1 * m2;
-cout << "Result: ";
-cout << m1;
-cout << endl;
-} 
+		else if (operation == "/") {
+			if (m2.getLittle() == 0 && m2.getLot() == 0 && m2.getHeap() == 0) {
+				cout << "Error: Cannot divide by zero." << endl;
+			}
+			else {
+				m1 / m2;
+				cout << "\nResult: (" << m1 << ") " << endl;
+			}
+		}
 
-else if (operation == '/') {
-if (m2.getLittle() == 0 && m2.getLot() == 0 && m2.getHeap() == 0) {
-cout << "Error: Cannot divide by zero." << endl;
-} else {
-m1 / m2;
-cout << "Result: ";
-cout << m1;
-cout << endl;
-}
-}
+		else if (operation == "==") {
+			if (m1 == m2) {
+				cout << "The measurements are equal." << endl;
+			}
+			else {
+				cout << "The measurements are not equal." << endl;
+			}
+		}
+		else {
+			cout << "That is not a valid operation." << endl;
+		}
 
-else if (operation == '=') {
-if (m1 == m2) {
-cout << "The measurements are equal." << endl;
-} else {
-cout << "The measurements are not equal." << endl;
-}
-} 
-else {
-cout << "That is not a valid operation." << endl;
-}
-cout << "Do you want to do another calculation? Enter y for yes or n for no: ";
-cin >> choice;
-}
-if (choice == 'n' || choice == 'N') {
-cout << "end" << endl;
-}
-else {
-	
-return 0;
-}
+		m1.convertToLittles();
+		m2.convertToLittles();
+
+		cout << "\nMeasurement One converted to meters: " << m1.getLittle() << "m" << endl;
+
+		cout << "\nMeasurement Two converted to meters: " << m2.getLittle() << "m" << endl;
+
+		cout << "\nDo you want to do another calculation? (Y/N): ";
+		cin >> choice;
+		cout << "\n+-----------------------------------------------+" << endl;
+	}
+	if (choice == 'n' || choice == 'N') {
+		cout << "End" << endl;
+	}
+	else {
+
+		return 0;
+	}
 }
