@@ -2,6 +2,7 @@
 
 using namespace std;
 
+//Constuctors
 Measurement::Measurement() : little(0), lot(0), heap(0) {}
 
 Measurement::Measurement(int little, int lot, int heap) : little(little), lot(lot), heap(heap) {}
@@ -37,6 +38,18 @@ void Measurement::simplifyMeasurement() {
 	convertFromLittles();
 
 };
+
+//Returns the number of yards in a measurement instance (1 yard = 1 little)
+int Measurement::returnMeters() {
+
+	this->convertToLittles();
+
+	int meters = this->little;
+
+	this->convertFromLittles();
+
+	return meters;
+}
 
 //Overload for == 
 bool Measurement::operator ==(Measurement measurement) {
