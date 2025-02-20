@@ -1,17 +1,21 @@
-class Wheel {
-public:
-    int minValue;
-    int maxValue;
+#include "Wheel.h"
+#include <cstdlib>
+#include <ctime>
 
-    // Constructor: Set the range from 1 to 10
-    Wheel() {
-        minValue = 1;
-        maxValue = 10;
-        srand(time(0)); // Make the random numbers different every time
-    }
+Wheel::Wheel(int maxVal) {
+    minValue = 1;
+    maxValue = maxVal;
+    srand(time(0));
+}
 
-    // Spin the wheel to get a random number
-    int spin() {
-        return rand() % (maxValue - minValue + 1) + minValue;
-    }
-};
+int Wheel::spin() {
+    return rand() % (maxValue - minValue + 1) + minValue;
+}
+
+void Wheel::increaseRange() {
+    if (maxValue < 20) maxValue++;
+}
+
+void Wheel::decreaseRange(int playerMax) {
+    if (maxValue > playerMax) maxValue--;
+}
