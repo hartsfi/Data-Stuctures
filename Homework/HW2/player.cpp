@@ -1,39 +1,51 @@
-class Player {
-    public:
-        int money;
-        int bet;
-        Wheel wheel; // The player has a wheel
-    
-        // Constructor: Start with some money
-        Player() {
-            money = 1000; // Start with $1000
-            bet = 0;
+#include "Player.h"
+#include <iostream>
+
+using namespace std;
+
+Player::Player() {
+    money = 1000;
+    bet = 0;
+}
+
+void Player::placeBet(int amount) {
+    if (amount > 0 && amount <= money) {
+        bet = amount;
+        money -= bet;
+    } else {
+        cout << "Invalid bet!" << endl;
+    }
+}
+
+char Player::chooseWagerOption() {
+    char choice;
+    cout << "Choose: (K)eep, (D)ouble, (H)alve: ";
+    cin >> choice;
+    return choice;
+}
+
+void Player::adjustBet(char choice) {
+    if (choice == 'D' || choice == 'd') {
+        if (money >= bet) {
+            money -= bet;
+            bet *= 2;
+        } else {
+            cout << "Not enough money to double the bet!" << endl;
         }
-    
-        // Place a bet
-        void placeBet(int amount) {
-            if (amount > 0 && amount <= money) {
-                bet = amount;
-                money -= bet;
-                cout << "You bet: " << bet << endl;
-            } else {
-                cout << "Invalid bet!" << endl;
-            }
-        }
-    
-        // Spin the player's wheel
-        int spinWheel() {
-            return wheel.spin();
-        }
-    
-        // Win the bet (get double the bet back)
-        void win() {
-            money += bet * 2;
-            cout << "You won! New total: " << money << endl;
-        }
-    
-        // Lose the bet (bet is already taken out)
-        void lose() {
-            cout << "You lost! Remaining money: " << money << endl;
-        }
-    };
+    } else if (choice == 'H' || choice == 'h') {
+        bet /= 2;
+    }
+}
+
+int Player::spinWheel() {
+    return wheel.spin();
+}
+
+void Player::win() {
+    money += bet * 2;
+    cout << "You won! New total: $" << money << endl;
+}
+
+void Player::lose() {
+    cout << "You lost! Remaining money: $" << money << endl;
+}
