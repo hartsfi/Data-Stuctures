@@ -1,10 +1,10 @@
 Data Structures (2028C) -- Spring 2025 – Lab 6
 Topics covered: Stacks and Queues
-Lab due: Sunday, Mar 2 at 11:55PM for Monday Section
-Tuesday, Mar 4 at 11:55 PM for Wednesday Section
+
 Objective:
 The objective of this Lab is to examine stacks and queues built using C++. This will reverse
 the letters in words but not the order of the words.
+
 Task 1: Create a stack class that will be used as the basis for the remainder of the lab.
 1. Create a new project. You can name this whatever you like.
 2. Design a stack class using an array (do not use a vector). This class should be a template.
@@ -21,10 +21,12 @@ to avoid memory leaks. It doesn’t need to return any value.
 h. Create the implementation code for the above functions as required. Do not use
 cout in the class. Any errors such as overflow or underflow should throw a
 custom class error.
+
 Task 2: Create a queue class that will be used as the basis for the remainder of the lab.
 1. Create a queue class. This class should be a template.
 2. Design the queue class using an array to store data. Include the standard functions for a
 queue. This should be very similar to the functionality described in Task 1.
+
 Task 3: Working with text
 1. Give the user the choice to get input from a file or from the terminal.
 2. If user chooses a file:
@@ -46,6 +48,7 @@ b. Perform the same reverse on the text and output it as Task 3.2.b
 6. Include in the lab report a screen shot(s) of the output of a test. Include a diagram of
 what the stack and queue look like in solving the sample above (you may need to show
 various views of a single stack and queue).
+
 Lab Submission:
 1. Write a lab report including the following information:
 a. A description of the objectives/concepts explored in this assignment including
@@ -56,6 +59,7 @@ b. The sections from each task indicated to be included in the lab report.
 instructions to compile and run those programs.
 3. Package all files in a single zip folder and submit the file to canvas.
 Lab Grading:
+
 1. 20% - Lab attendance
 2. 20% - Task 1 has been correctly implemented and meets all requirements.
 3. 20% - Task 2 has been correctly implemented and meets all requirements.
