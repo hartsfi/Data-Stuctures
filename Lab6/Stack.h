@@ -12,16 +12,25 @@ class Stack {
 
 	public:
 
+		// Default Constructor
 		Stack(int size) : size(size) {
 			items = new T*[size];
 		};
 
+		// Destructor
 		~Stack() {
 			delete[] items;
 		}
 
-		void push(T* newItem) {
+		/*
+			push()
 
+			Arguments: T* newItem
+			Return: void
+			Function: Adds the item to the Stack
+		*/
+
+		void push(T* newItem) {
 			if (!isFull()) {
 				items[index] = newItem;
 				index++;
@@ -31,20 +40,30 @@ class Stack {
 			}
 		}
 
+		/*
+			pop()
+
+			Arguments: None
+			Return: T*
+			Function: Removes the first item in the Stack and returns it
+		*/
+
 		T* pop() {
 			if (!isEmpty()) {
-
-				T* temp = items[index - 1];
-
-				delete items[index - 1];
-
 				index--;
-
-				return temp;
+				return items[index];
 			}
 			
 			throw UnderflowException("Exception: Stack is Empty");
 		}
+
+		/*
+			top()
+
+			Arguments: None
+			Return: T*
+			Function: Returns the top item of the Stack
+		*/
 
 		T* top() {
 			if (!isEmpty()) {
@@ -54,27 +73,32 @@ class Stack {
 			throw UnderflowException("Exception: Stack is Empty");
 		}
 
-		int length() { return index; }
+		/*
+			empty()
+
+			Arguments: None
+			Return: void
+			Function: Empties the Stack and deallocates items memory
+		*/
 
 		void empty() {
-
-			for (int i = 0; i < index; i++) {
-				delete items[i];
+			while (!isEmpty()) {
+				T* temp = pop();
+				delete temp;
 			}
-
-			delete[] items;
-
-			items = new T * [size];
-
-			index = 0;
 		}
 
+		// True if Stack is Empty
 		bool isEmpty() {
 			return index == 0;
 		}
 		 
+		// True if Stack is Full
 		bool isFull() {
 			return index == size;
 		}
+
+		// Returns the length of the Stack
+		int length() { return index; }
 
 };
