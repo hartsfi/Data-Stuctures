@@ -1,5 +1,4 @@
 #pragma once
-#include "BinarySearchTree.tpp"
 #include <iostream>
 
 using namespace std;
