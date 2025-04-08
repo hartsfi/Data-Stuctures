@@ -1,12 +1,7 @@
 #include "BinarySearchTree.h"
-/*
-void rebalance();
-int Size();
-T GetAllAscending();
-T GetAllDescending();
-void EmptyTree();
-*/
+#include <iostream>
 
+using namespace std;
 
 template <typename T>
 T BinarySearchTree<T>::Find(TreeNode<T>* node,const T target) {
