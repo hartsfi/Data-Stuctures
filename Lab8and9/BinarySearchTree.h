@@ -115,7 +115,7 @@ void BinarySearchTree<T>::Insert(TreeNode<T>*& node, const T target) {
 
     updateHeight(node); // Add height to the node since it has a child post-insert
 
-    int nodeBalance = getBalance(node); // Get balance of the node post insert
+    int nodeBalance = balanceCalculation(node); // Get balance of the node post insert
 
     // If the new insert takes place at the far left of the left subtree
     // The balance indicates that there is an unbalance on said left subtree
@@ -312,3 +312,8 @@ template <typename T>
 TreeNode<T> BinarySearchTree<T>::GetAllDescending(TreeNode<T> nodeArray, TreeNode<T>* currentNode, int& index) {
 
 };
+
+
+
+
+
