@@ -95,6 +95,9 @@ void BinarySearchTree<T>::Insert(TreeNode<T>*& node, const T target) {
     // The balance indicates that there is an imbalance on the right subtree
     // Rotate the right child to the right (Get that right child far right to straighten it out)
     // Rotate the main node to the right (Get that main node to the left to distribute the load)
+    //  10      -->     10              -->         20
+    //      30  -->         20          -->     10      30
+    //  20      -->             30      -->
     if (nodeBalance < -1 && target < node->right->data) {
         rotateRight(node->right);
         rotateLeft(node);
