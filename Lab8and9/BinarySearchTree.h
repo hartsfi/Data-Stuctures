@@ -40,43 +40,43 @@ class BinarySearchTree {
         int balanceCalculation(TreeNode<T>* node);
         void updateHeight(TreeNode<T>* node);
         void Insert(TreeNode<T> *&node,T target);
-
-    public:
+        T Find(TreeNode<T> *node, T target);
         T Remove(TreeNode<T> *&node, T target);
-        T Find(TreeNode<T> *node, T target); // Returns data val when found, throws exception if not.
-        void Insert(T target) { // Create a user friendly version of insert where they don't need the node.
-            Insert(root,target);
-        };
-
-
         int getHeight(TreeNode<T>* node);
         int Size(TreeNode<T>* currentNode);
         TreeNode<T> GetAllAscending(TreeNode<T> nodeArray, TreeNode<T>* currentNode, int& index);
         TreeNode<T> GetAllDescending(TreeNode<T> nodeArray, TreeNode<T>* currentNode, int& index);
         void EmptyTree(TreeNode<T>* currentNode);
 
+    public:
+    // Create a user friendly version of Remove where they don't need the node.
+        T Remove(T target) {Remove(root,target);};
+    // Create a user friendly version of Find where they don't need the node.
+        T Find(T target) {return Find(root,target);};
+    // Create a user friendly version of Insert where they don't need the node.
+        void Insert(T target) {Insert(root,target);};
+    // Create a user friendly version of Size where they don't need the node.
+        int Size() {return Size(root);};
+    //
+        void Empty () {EmptyTree(root);};
+    // Constructor
         BinarySearchTree() : root(nullptr) {};
-        ~BinarySearchTree() {
-            EmptyTree(root);
-        };
+    // Destructor
+        ~BinarySearchTree() {EmptyTree(root);};
 
 
 };
 
 template <typename T>
 T BinarySearchTree<T>::Find(TreeNode<T>* node,const T target) {
-    if (node == nullptr) { // If the node gets to this point, it does not exist
-        throw notFoundException("Target not found");
-    }
-    if (node->data == target) { // Case for the node data matching target
-        return node->data;
-    }
-    if (target < node->data) { // Case to indicate moving to the right
-        return Find(node->right,target);
-    }
-    else { // If it doesn't move to the right it must go left
-        return Find(node->left,target);
-    }
+    // If the node gets to this point, it does not exist
+    if (node == nullptr) {throw notFoundException("Target not found");}
+    // Case for the node data matching target
+    if (node->data == target) {return node->data;}
+    // Case to indicate moving to the right
+    if (target < node->data) {return Find(node->right,target);}
+    // If it doesn't move to the right it must go left
+    else {return Find(node->left,target);}
 }
 
 template <typename T>
