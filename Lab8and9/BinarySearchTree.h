@@ -1,319 +1,363 @@
 #pragma once
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
+/*
+    TreeNode Struct:
+        - data: The value stored in the node
+        - height: The height of the node in the tree
+        - amount: Count of duplicate elements
+        - left: Pointer to the left child
+        - right: Pointer to the right child
+*/
 template <typename T>
 struct TreeNode {
-    T data; // What data each node represents
-    TreeNode* left; // Stores the pointer for the node to its left
-    TreeNode* right; // Stores the pointer for the node to its right
-    int height; // Stores the height of the node
+    T data;
+    int height;
+    int amount;
+    TreeNode* left;
+    TreeNode* right;
 
-    TreeNode (const T& input) {
-        data = input;
-        left = nullptr;
-        right = nullptr;
-        height = 0;
-    };
+    TreeNode(T val) : data(val), height(1), amount(1), left(nullptr), right(nullptr) {}
 };
 
-class notFoundException {
-    private:
-        string errorMessage;
-    public:
-        explicit notFoundException(const string& errorMessage) : errorMessage(errorMessage) {}
+/*
+    notFoundException Class:
+        - Custom exception class for tree operations
+        - Provides meaningful error messages when an item is not found
+*/
+class notFoundException : public std::exception {
+public:
+    const char* getErrorMessage() const noexcept {
+        return "Item not found in the tree.";
+    }
 
-        string getErrorMessage() const {
-            return errorMessage;
-        }
+    notFoundException(const char* message) : msg(message) {}
+    const char* what() const noexcept override {
+        return msg;
+    }
+
+private:
+    const char* msg;
 };
 
-
+// BinarySearchTree class with templated type T
 template <typename T>
 class BinarySearchTree {
-    private:
-        TreeNode<T>* root;
+public:
+    BinarySearchTree() : root(nullptr), treeSize(0) {}
 
-        void RotateLeft(TreeNode<T>*& targetNode);
-        void RotateRight(TreeNode<T>*& targetNode);
-        int balanceCalculation(TreeNode<T>* node);
-        void updateHeight(TreeNode<T>* node);
-        void Insert(TreeNode<T> *&node,T target);
-        T Find(TreeNode<T> *node, T target);
-        T Remove(TreeNode<T> *&node, T target);
-        int getHeight(TreeNode<T>* node);
-        int Size(TreeNode<T>* currentNode);
-        TreeNode<T> GetAllAscending(TreeNode<T> nodeArray, TreeNode<T>* currentNode, int& index);
-        TreeNode<T> GetAllDescending(TreeNode<T> nodeArray, TreeNode<T>* currentNode, int& index);
-        void EmptyTree(TreeNode<T>* currentNode);
-
-    public:
-    // Create a user friendly version of Remove where they don't need the node.
-        T Remove(T target) {Remove(root,target);};
-    // Create a user friendly version of Find where they don't need the node.
-        T Find(T target) {return Find(root,target);};
-    // Create a user friendly version of Insert where they don't need the node.
-        void Insert(T target) {Insert(root,target);};
-    // Create a user friendly version of Size where they don't need the node.
-        int Size() {return Size(root);};
-    //
-        void Empty () {EmptyTree(root);};
-    // Constructor
-        BinarySearchTree() : root(nullptr) {};
-    // Destructor
-        ~BinarySearchTree() {EmptyTree(root);};
-
-
-};
-
-template <typename T>
-T BinarySearchTree<T>::Find(TreeNode<T>* node,const T target) {
-    // If the node gets to this point, it does not exist
-    if (node == nullptr) {throw notFoundException("Target not found");}
-    // Case for the node data matching target
-    if (node->data == target) {return node->data;}
-    // Case to indicate moving to the right
-    if (target < node->data) {return Find(node->right,target);}
-    // If it doesn't move to the right it must go left
-    else {return Find(node->left,target);}
-}
-
-template <typename T>
-// No return (Tree modification) // Pass in pointer to node (root) and target insert data value // Node will be updated every call
-void BinarySearchTree<T>::Insert(TreeNode<T>*& node, const T target) {
-    // Case for creating root
-    if (node == nullptr) {
-        node = new TreeNode<T>(target); // New node instance with target val
-        root = node;
+    ~BinarySearchTree() {
+        EmptyTree(root);
     }
-    if (target < node->data) {
-        // Spot is open for data to be inserted left
-        if (node->left == nullptr) {
-            node->left = new TreeNode<T>(target); // New node instance with target val
+
+    /*
+        GetBalance(TreeNode<T>* node) const -
+        Returns: int
+        Function: Computes and returns the balance factor of the given node
+    */
+    int GetBalance(TreeNode<T>* node) const {
+        return balanceCalculation(node);
+    }
+
+    /*
+        Insert(T value) -
+        Returns: void
+        Function: Public interface to insert a value into the tree
+    */
+    void Insert(T value) {
+        Insert(root, value);
+    }
+
+    /*
+        EmptyTree() -
+        Returns: void
+        Function: Public interface to empty (delete) the entire tree
+    */
+    void EmptyTree() {
+        EmptyTree(root);
+    }
+
+    /*
+        Size() -
+        Returns: int
+        Function: Returns the total number of nodes in the tree
+    */
+    int Size() {
+        return Size(root);
+    }
+
+    /*
+        Find(T searchItem) const -
+        Returns: TreeNode<T>*
+        Function: Takes in an item of type T and searches the tree for that item. If found, the node is returned, if not, an exception is thrown
+    */
+    TreeNode<T>* Find(T searchItem) const {
+        return Find(root, searchItem);
+    }
+
+    /*
+        GetAscending() -
+        Returns: TreeNode<T>**
+        Function: Returns an array of pointers to tree nodes in ascending (in-order) order
+    */
+    TreeNode<T>** GetAscending() {
+        return GetAscending(root);
+    }
+
+    /*
+        GetDescending() -
+        Returns: TreeNode<T>**
+        Function: Returns an array of pointers to tree nodes in descending (reverse in-order) order
+    */
+    TreeNode<T>** GetDescending() {
+        return GetDescending(root);
+    }
+
+    /*
+        Remove(const T target) -
+        Returns: TreeNode<T>*
+        Function: Removes the node with the given value from the tree and returns a copy of that node's data
+    */
+    TreeNode<T>* Remove(const T target) {
+        return Remove(root, target);
+    }
+
+private:
+    TreeNode<T>* root;
+    int treeSize;
+
+    // Returns the height of the node or 0 if null
+    int getHeight(TreeNode<T>* node) const {
+        return node ? node->height : 0;
+    }
+
+    /*
+        Size(TreeNode<T>* currentNode) const -
+        Returns: int
+        Function: Recursively calculates the size (number of nodes) of the subtree rooted at currentNode
+    */
+    int Size(TreeNode<T>* currentNode) const {
+        return currentNode ? 1 + Size(currentNode->left) + Size(currentNode->right) : 0;
+    }
+
+    /*
+        Find(TreeNode<T>* currentNode, T searchItem) const -
+        Returns: TreeNode<T>*
+        Function: Takes in an item of type T and searches the tree for that item. If found, the node is returned, if not, an exception is thrown
+    */
+    TreeNode<T>* Find(TreeNode<T>* currentNode, T searchItem) const {
+        if (currentNode == nullptr) {
+            throw notFoundException("Item not found in the tree.");
         }
-        else { // There is no spot open for insert
-            Insert(node->left,target);
+
+        if (searchItem == currentNode->data) {
+            return currentNode;
         }
-    }
-    else if (target > node->data) {
-        if (node->right == nullptr) { // Spot is open for data to be inserted right
-            node->right = new TreeNode<T>(target); // New node instance with target val
+        else if (searchItem < currentNode->data) {
+            return Find(currentNode->left, searchItem);
         }
-        else { // There is no spot open for insert
-            Insert(node->right,target);
-        }
-    }
-    else { // If there is a duplicate, insert to the right of it
-        if (node->right == nullptr) { // There is a spot open for insertion
-            node->right = new TreeNode<T>(target);
-        }
-        else { // There is no spot open for insertion
-            Insert(node->right,target);
-        }
-    }
-
-    updateHeight(node); // Add height to the node since it has a child post-insert
-
-    int nodeBalance = balanceCalculation(node); // Get balance of the node post insert
-
-    // If the new insert takes place at the far left of the left subtree
-    // The balance indicates that there is an unbalance on said left subtree
-    // Rotate main node of the subtree to the right to distribute node load
-    //              30      -->         20
-    //          20          -->     10      30
-    //      10              -->
-    if (nodeBalance > 1 && target < node->left->data)
-        RotateRight(node);
-
-    // If the new insert takes place at the far right of the right subtree
-    // The balance indicates that there is an unbalance on said right subtree
-    // Rotate the main node of the subtree to the left to distribute node load
-    //      10              -->         20
-    //          20          -->     10      30
-    //              30      -->
-    if (nodeBalance < -1 && target > node->right->data)
-        RotateLeft(node);
-
-    // If the new child is inserted to the right of the left child
-    // The balance indicates that there is an imbalance on said left subtree
-    // Rotate the left child to the left (Get that left child far left to straighten it out)
-    // Rotate the main node to the right (Get that main node to the right to distribute the load)
-    //      30  -->             30      -->         20
-    //  10      -->         20          -->     10      30
-    //      20  -->     10              -->
-    if (nodeBalance > 1 && target > node->left->data) {
-        RotateLeft(node->left);
-        RotateRight(node);
-    }
-
-    // If the new child is inserted to the left of the right child
-    // The balance indicates that there is an imbalance on the right subtree
-    // Rotate the right child to the right (Get that right child far right to straighten it out)
-    // Rotate the main node to the right (Get that main node to the left to distribute the load)
-    //  10      -->     10              -->         20
-    //      30  -->         20          -->     10      30
-    //  20      -->             30      -->
-    if (nodeBalance < -1 && target < node->right->data) {
-        RotateRight(node->right);
-        RotateLeft(node);
-    }
-}
-
-template <typename T>
-// Return data type T from target node // Pass in pointer to node and target data value // Node will be updated every call
-T BinarySearchTree<T>::Remove (TreeNode<T>*& node,const T target) {
-    if (node == nullptr) { // Case for target value not found
-        throw notFoundException("Target value can not be found.");
-    }
-    if (target < node->data) { // If the target is less than the current node data (It has to be on left)
-        Remove(node->left,target); // Call function to the left another position
-    }
-    else if (target > node->data) { // If the target is more than the current node data (It has to be on right)
-        Remove(node->right,target); // Call function to the right another position
-    }
-    else { // The target == node->data
-        T retVal = node->data;
-        // Next we will have to handle cases of children
-        // Node has no children // Can be deleted and node set to null (prevent memory leak) with no further action
-        if (node->left == nullptr && node->right == nullptr) {
-            delete node;
-            node = nullptr;
-        } // Node has one child that's on the left
-        else if (node->left != nullptr && node->right == nullptr) {
-            TreeNode<T>* temp = node; // Holds original node
-            node = node->left; // Replace node with child
-            delete temp; // Delete old node
-        } // Node has one child that's on the right
-        else if (node->right != nullptr && node->left == nullptr) {
-            TreeNode<T>* temp = node; // Holds original node
-            node = node->right; // Replace old node with child
-            delete temp; // Delete old node
-        } // Node has two children
         else {
-            TreeNode<T>* temp = node->right; // Replacement node will be from right side
-            // We want to use the far right->left value as the replacement node as it would not disrupt the order of the tree
-            // temp->right->left is by default bigger than node->left, and temp->right->right would still be bigger without change
-            // Once this while loop is done, we expect to have a temp->right->left nested value to act as a replacement
-            // Obviously, if there is no left child, the tree will just be shifted left to fill the vacant spot
-            while (temp->left != nullptr) {
-                temp = temp->left;
-            }
-            // Overwrite the original node's data with our temp data while preserving its children and connections
-            node->data = temp->data;
-            // Remove the temp data value starting from the right of the node (So the replacement we just did isn't deleted)
-            remove(node->right, temp->data);
+            return Find(currentNode->right, searchItem);
         }
-        return retVal;
     }
-}
 
-template <typename T>
-int BinarySearchTree<T>::getHeight(TreeNode<T>* node) {
-    if (node == nullptr)
-        return -1; // No node exists
-    else
-        return node->height;
-}
+    /*
+        Insert(TreeNode<T>*& currentNode, T value) -
+        Returns: void
+        Function: Recursively inserts a value into the subtree rooted at currentNode while maintaining AVL balance
+    */
+    void Insert(TreeNode<T>*& currentNode, T value) {
+        if (currentNode == nullptr) {
+            currentNode = new TreeNode<T>(value);
+            treeSize++;
+            return;
+        }
 
+        if (value < currentNode->data) {
+            Insert(currentNode->left, value);
+        }
+        else if (value > currentNode->data) {
+            Insert(currentNode->right, value);
+        }
+        else {
+            currentNode->amount++;
+            return;
+        }
 
-template <typename T>
-int BinarySearchTree<T>::balanceCalculation(TreeNode<T>* node) {
-    if (node == nullptr) //
-        return 0;
-    else
-        return getHeight(node->left) - getHeight(node->right); // Left side - Right side // Why negative == right unbalanced
-}
-
-template <typename T>
-void BinarySearchTree<T>::updateHeight(TreeNode<T>* node) {
-    if (node == nullptr) return;
-
-    int leftHeight = getHeight(node->left);
-    int rightHeight = getHeight(node->right);
-
-    // Since we take the heights of the left and right children, whatever that comes back to (+1) would be our height
-    // We take the max of the two heights because if one child's subtree goes deeper that the other child, we need to account for that.
-    // And if there would be no children, it would be max(-1,-1) which would evaluate fully to 0 which would be root or leaf.
-    node->height = 1 + std::max(leftHeight, rightHeight);
-}
-
-
-template <typename T>
-void BinarySearchTree<T>::RotateRight(TreeNode<T>*& targetNode) {
-    // Node 1 is the left child of the original target node
-    TreeNode<T>* node1 = targetNode->left;
-    // Node 2 is the right child of node 1 (targetNode->left->right)
-    TreeNode<T>* node2 = node1->right;
-
-    // In a right rotation, we need target node now to the right of it's left child
-    node1->right = targetNode;
-    // If the left child already has a child in the right slot, we need to preserve it
-    // Move the pre-existing child into the slot we just opened up on the target node
-    targetNode->left = node2;
-
-    targetNode = node1;
-
-    updateHeight(targetNode);
-    updateHeight(node1);
-}
-
-template <typename T>
-void BinarySearchTree<T>::RotateLeft(TreeNode<T>*& targetNode) {
-    // Node 1 is the right child of the original target node
-    TreeNode<T>* node1 = targetNode->right;
-    // Node 2 is the left child of node 1 (targetNode->right->left)
-    TreeNode<T>* node2 = node1->left;
-
-    // In a right rotation, we need target node now to the right of it's left child
-    node1->left = targetNode;
-    // If the right child already has a child in the left slot, we need to preserve it
-    // Move the pre-existing child into the slot we just opened up on the target node
-    targetNode->right = node2;
-
-    targetNode = node1;
-
-    updateHeight(targetNode);
-    updateHeight(node1);
-}
-
-template <typename T>
-void BinarySearchTree<T>::EmptyTree(TreeNode<T>* currentNode) {
-    if (currentNode == nullptr) { // Case where we reach the end of a path (Start returning back up tree)
-        return;
+        updateHeight(currentNode);
+        balance(currentNode);
     }
-    EmptyTree(currentNode->left); // Goes down the left subtree first
-    EmptyTree(currentNode->right); // Goes down right subtree second
 
-    // Once the function can't go down farther, it will reach here where it will delete the node
-    // Then set the node to a nullptr so there are no memory leaks
-    delete currentNode;
-    currentNode = nullptr;
-};
+    /*
+        Remove(TreeNode<T>*& node, const T target) -
+        Returns: TreeNode<T>*
+        Function: Recursively finds and removes a node with the given value and returns a copy of the removed node
+    */
+    TreeNode<T>* Remove(TreeNode<T>*& node, const T target) {
+        if (node == nullptr) {
+            throw notFoundException("Target value can not be found.");
+        }
 
-template <typename T>
-int BinarySearchTree<T>::Size(TreeNode<T>* currentNode) {
-    if (currentNode == nullptr) { // Case where we reach the end of a path (Start returning back up tree)
-        return 0; // Return 0 since we don't want it counting towards size
+        if (target < node->data) {
+            return Remove(node->left, target);
+        }
+        else if (target > node->data) {
+            return Remove(node->right, target);
+        }
+        else {
+            TreeNode<T>* removedNode = new TreeNode<T>(node->data);
+            removedNode->height = node->height;
+            removedNode->amount = node->amount;
+
+            if (node->left == nullptr && node->right == nullptr) {
+                delete node;
+                node = nullptr;
+            }
+            else if (node->left != nullptr && node->right == nullptr) {
+                TreeNode<T>* temp = node;
+                node = node->left;
+                delete temp;
+            }
+            else if (node->right != nullptr && node->left == nullptr) {
+                TreeNode<T>* temp = node;
+                node = node->right;
+                delete temp;
+            }
+            else {
+                TreeNode<T>* temp = node->right;
+                while (temp->left != nullptr) {
+                    temp = temp->left;
+                }
+                node->data = temp->data;
+                node->amount = temp->amount;
+                Remove(node->right, temp->data);
+            }
+
+            treeSize--;
+            return removedNode;
+        }
     }
-    // Incrementally add the size from each function call
-    // If we get to this return it's atleast 1 even ->left and -> right don't return anything as we got past the first condition
-    // This will go down the left subtree then the right subtree, tallying up
-    return 1 + Size(currentNode->left) + Size(currentNode->right);
+
+    /*
+        GetAscending(TreeNode<T>* node) -
+        Returns: TreeNode<T>**
+        Function: Fills and returns a dynamically allocated array of TreeNode pointers in ascending order
+    */
+    TreeNode<T>** GetAscending(TreeNode<T>* node) {
+        int size = Size(node);
+        TreeNode<T>** array = new TreeNode<T>*[size];
+        int index = 0;
+        fillAscending(array, node, index);
+        return array;
+    }
+
+    /*
+        GetDescending(TreeNode<T>* node) -
+        Returns: TreeNode<T>**
+        Function: Fills and returns a dynamically allocated array of TreeNode pointers in descending order
+    */
+    TreeNode<T>** GetDescending(TreeNode<T>* node) {
+        int size = Size(node);
+        TreeNode<T>** array = new TreeNode<T>*[size];
+        int index = 0;
+        fillDescending(array, node, index);
+        return array;
+    }
+
+    /*
+        EmptyTree(TreeNode<T>*& currentNode) -
+        Returns: void
+        Function: Recursively deletes all nodes in the subtree rooted at currentNode
+    */
+    void EmptyTree(TreeNode<T>*& currentNode) {
+        if (currentNode == nullptr) return;
+        EmptyTree(currentNode->left);
+        EmptyTree(currentNode->right);
+        delete currentNode;
+        currentNode = nullptr;
+        treeSize = 0;
+    }
+
+    // Updates the height of the given node based on its children's heights
+    void updateHeight(TreeNode<T>* node) {
+        if (node) {
+            int leftHeight = getHeight(node->left);
+            int rightHeight = getHeight(node->right);
+            node->height = 1 + std::max(leftHeight, rightHeight);
+        }
+    }
+
+    // Performs a left rotation on the given node
+    void rotateLeft(TreeNode<T>*& node) {
+        TreeNode<T>* newRoot = node->right;
+        node->right = newRoot->left;
+        newRoot->left = node;
+        updateHeight(node);
+        updateHeight(newRoot);
+        node = newRoot;
+    }
+
+    // Performs a right rotation on the given node
+    void rotateRight(TreeNode<T>*& node) {
+        TreeNode<T>* newRoot = node->left;
+        node->left = newRoot->right;
+        newRoot->right = node;
+        updateHeight(node);
+        updateHeight(newRoot);
+        node = newRoot;
+    }
+
+    /*
+        balance(TreeNode<T>*& node) -
+        Returns: void
+        Function: Applies AVL balancing logic to the node by performing appropriate rotations
+    */
+    void balance(TreeNode<T>*& node) {
+        if (!node) return;
+
+        updateHeight(node);
+        int balanceFactor = balanceCalculation(node);
+
+        if (balanceFactor > 1) {
+            if (balanceCalculation(node->left) < 0) {
+                rotateLeft(node->left);
+            }
+            rotateRight(node);
+        }
+        else if (balanceFactor < -1) {
+            if (balanceCalculation(node->right) > 0) {
+                rotateRight(node->right);
+            }
+            rotateLeft(node);
+        }
+    }
+
+    // Calculates the balance factor of a node
+    int balanceCalculation(const TreeNode<T>* currentNode) const {
+        if (!currentNode) return 0;
+
+        int leftHeight = (currentNode->left) ? getHeight(currentNode->left) : 0;
+        int rightHeight = (currentNode->right) ? getHeight(currentNode->right) : 0;
+
+        return leftHeight - rightHeight;
+    }
+
+    // Helper function to fill an array in ascending order using in-order traversal
+    void fillAscending(TreeNode<T>** array, TreeNode<T>* node, int& index) {
+        if (node == nullptr) return;
+        fillAscending(array, node->left, index);
+        array[index++] = node;
+        fillAscending(array, node->right, index);
+    }
+
+    // Helper function to fill an array in descending order using reverse in-order traversal
+    void fillDescending(TreeNode<T>** array, TreeNode<T>* node, int& index) {
+        if (node == nullptr) return;
+        fillDescending(array, node->right, index);
+        array[index++] = node;
+        fillDescending(array, node->left, index);
+    }
 };
-
-template <typename T>
-TreeNode<T> BinarySearchTree<T>::GetAllAscending(TreeNode<T> nodeArray, TreeNode<T>* currentNode, int& index) {
-
-};
-
-// Practically just the inverse of the ascending function
-template <typename T>
-TreeNode<T> BinarySearchTree<T>::GetAllDescending(TreeNode<T> nodeArray, TreeNode<T>* currentNode, int& index) {
-
-};
-
-
-
-
-
