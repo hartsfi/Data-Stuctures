@@ -4,7 +4,7 @@
 HashTableLinear::HashTableLinear(int size) {
     maxSize = size;
     currentSize = 0;
-    table = new Student*[maxSize];
+    table = new Student * [maxSize];
 
     for (int i = 0; i < maxSize; i++) {
         table[i] = nullptr;
@@ -77,4 +77,23 @@ Student* HashTableLinear::getItem(std::string key) {
 
 int HashTableLinear::getLength() const {
     return currentSize;
+}
+
+bool HashTableLinear::isEmpty() {
+    return currentSize == 0;
+}
+
+bool HashTableLinear::isInList(std::string key) {
+    int index = hash(key);
+    int start = index;
+
+    while (table[index] != nullptr) {
+        if (table[index]->getMNumber() == key) {
+            return true;
+        }
+        index = (index + 1) % maxSize;
+        if (index == start) break; // full cycle
+    }
+
+    return false;
 }
