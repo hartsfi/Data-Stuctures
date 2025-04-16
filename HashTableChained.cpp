@@ -37,7 +37,7 @@ Student* HashTableChained::removeItem(std::string inVal) {
     if (result != nullptr) {
         currentSize--;  // Decrement the current size of the hash table
         Student* s = new Student(result->data);  // Create a new student object with the data found
-        chainedTable[index].RemoveItem(Student("", "", inVal, ""));
+        delete result;  // Delete the node from the linked list
         return s;  // Return the student that was removed
     }
 
