@@ -1,0 +1,199 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+
+class Graph {
+private:
+// This stores the connections (tunnels) from each room to other rooms
+    unordered_map<int, vector<int>> adjList; 
+
+public:
+    // Adds a new room to the map if it's not already there
+    void addRoom(int room) {
+        if (adjList.find(room) == adjList.end()) {
+            adjList[room] = vector<int>();
+        }
+    }
+
+    // Creates a two-way tunnel between room1 and room2
+    void addTunnel(int room1, int room2) {
+        adjList[room1].push_back(room2);
+        adjList[room2].push_back(room1);
+    }
+
+    // Get neighbors (connected rooms) like Gets all rooms connected to the given room
+    vector<int> getNeighbors(int room) {
+        return adjList[room];
+    }
+
+    // Checks if there is a tunnel from one room to another
+    bool hasEdge(int from, int to) {
+        for (int neighbor : adjList[from]) {
+            if (neighbor == to) return true;
+        }
+        return false;
+    }
+
+    // Prints the room number and all connected rooms (neighbors)
+    void printRoom(int room) {
+        cout << "You are in Room " << room << endl;
+        cout << "Tunnels lead to: ";
+        for (int neighbor : adjList[room]) {
+            cout << neighbor << " ";
+        }
+        cout << endl;
+    }
+};
+
+// Game Constants & Functions
+
+const int NUM_ROOMS = 20;
+int playerRoom;
+int wumpusRoom;
+int pitRoom;
+int batRoom;
+int arrows = 3;
+Graph cave;   // The graph that holds all rooms and tunnels
+
+
+// This function sets up the game world Randomly place the hazards and player
+void setupGame() {
+    srand(time(0)); // seed randomness Initializes random number generator using current time
+
+    // Create rooms and random connections
+    for (int i = 0; i < NUM_ROOMS; i++) {
+        cave.addRoom(i);
+    }
+
+    // Randomly connect each room to 2-4 others with tunnels
+    for (int i = 0; i < NUM_ROOMS; i++) {
+        int connections = 2 + rand() % 3; // Random number between 2 and 4
+        while (cave.getNeighbors(i).size() < connections) {
+            int target = rand() % NUM_ROOMS; // Pick a random room
+             // Avoid self-connection and duplicate connections
+            if (target != i && !cave.hasEdge(i, target)) {
+                cave.addTunnel(i, target);
+            }
+        }
+    }
+
+    playerRoom = 0; // start at room 0
+
+    // Randomly assign Wumpus, pit, bats (not in starting room)
+    do { wumpusRoom = rand() % NUM_ROOMS; } while (wumpusRoom == 0);
+    do { pitRoom = rand() % NUM_ROOMS; } while (pitRoom == 0 || pitRoom == wumpusRoom);
+    do { batRoom = rand() % NUM_ROOMS; } while (batRoom == 0 || batRoom == pitRoom || batRoom == wumpusRoom);
+}
+
+// This function checks nearby rooms for danger hints
+void observe() {
+    vector<int> neighbors = cave.getNeighbors(playerRoom);
+    for (int room : neighbors) {
+        if (room == pitRoom) cout << "You feel a breeze..." << endl;
+        if (room == batRoom) cout << "You hear screeching!" << endl;
+        if (room == wumpusRoom) cout << "You smell a terrible beast..." << endl;
+    }
+}
+
+//  This function moves the player to a new room
+void move(int room) {
+    if (!cave.hasEdge(playerRoom, room)) {
+        cout << "You can't go there!" << endl;
+        return;
+    }
+    playerRoom = room;// Move player to the new room
+
+    // Check for hazards
+    if (playerRoom == pitRoom) {
+        cout << "You fell into a pit! Game over!" << endl;
+        exit(0);
+    } else if (playerRoom == batRoom) {
+        cout << "A colony of bats carries you away!" << endl;
+        vector<int> options = cave.getNeighbors(playerRoom);
+        playerRoom = options[rand() % options.size()];
+        move(playerRoom); // Check new room too
+    } else if (playerRoom == wumpusRoom) {
+        if (arrows > 0) {
+            cout << "The Wumpus attacks! You lose an arrow and it escapes!" << endl;
+            arrows--;
+            do {
+                wumpusRoom = rand() % NUM_ROOMS;
+            } while (wumpusRoom == playerRoom); // avoid same room Wumpus flees to another room
+        } else {
+            cout << "The Wumpus eats you! Game over!" << endl;
+            exit(0);
+        }
+    } else {
+        cout << "The room is empty." << endl;
+    }
+}
+
+// Shoot an arrow into a connected room
+void shoot(int room) {
+    if (arrows <= 0) {
+        cout << "You have no arrows left!" << endl;
+        return;
+    }
+
+    if (!cave.hasEdge(playerRoom, room)) {
+        cout << "You can't shoot there!" << endl;
+        return;
+    }
+
+    arrows--;
+    cout << "You shoot into room " << room << "..." << endl;
+
+    if (room == wumpusRoom) {
+        cout << "You hit the Wumpus! You win!" << endl;
+        exit(0);
+    } else {
+        cout << "Missed! The Wumpus moves..." << endl;
+        do {
+            wumpusRoom = rand() % NUM_ROOMS;
+        } while (wumpusRoom == playerRoom); // Wumpus avoids player
+    }
+}
+
+
+// Main Game Loop
+
+int main() {
+    setupGame();
+    cout << "Welcome to Hunt the Wumpus!" << endl;
+
+    while (true) {
+        cave.printRoom(playerRoom);
+        observe();
+        cout << "You have " << arrows << " arrow(s)." << endl;
+        cout << "Options:\n1) Move\n2) Shoot\n3) Observe\nChoice: ";
+
+        int choice;
+        cin >> choice;
+
+        if (choice == 1) {
+            int dest;
+            cout << "Enter room number to move to: ";
+            cin >> dest;
+            move(dest);
+        } else if (choice == 2) {
+            int target;
+            cout << "Enter room number to shoot at: ";
+            cin >> target;
+            shoot(target);
+        } else if (choice == 3) {
+            observe();
+        } else {
+            cout << "Invalid choice. Try again." << endl;
+        }
+
+        cout << "------------------------------------" << endl;
+    }
+
+    return 0;
+}
