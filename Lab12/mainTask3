@@ -1,0 +1,138 @@
+// task3_main.cpp
+#include <iostream>
+#include <string>
+#include <random>
+#include "Student.h"
+#include "StudentLinkedList.h"
+
+// Function to generate random names
+std::string getRandomFirstName() {
+    static std::string firstNames[] = {
+        "John", "Mary", "David", "Sarah", "Michael", "Jennifer", "James", "Elizabeth",
+        "Robert", "Emily", "William", "Emma", "Joseph", "Olivia", "Richard", "Sophia",
+        "Thomas", "Ava", "Charles", "Isabella", "Daniel", "Mia", "Matthew", "Charlotte",
+        "Anthony", "Amelia", "Mark", "Harper", "Donald", "Evelyn", "Steven", "Abigail",
+        "Paul", "Emily", "Andrew", "Madison", "Joshua", "Scarlett", "Kenneth", "Victoria",
+        "Kevin", "Camila", "Brian", "Arianna", "George", "Hailey", "Edward", "Kaylee",
+        "Ronald", "Ella", "Timothy", "Allison"
+    };
+    static int count = sizeof(firstNames) / sizeof(firstNames[0]);
+    return firstNames[rand() % count];
+}
+
+std::string getRandomLastName() {
+    static std::string lastNames[] = {
+        "Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson",
+        "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin",
+        "Thompson", "Garcia", "Martinez", "Robinson", "Clark", "Rodriguez", "Lewis", "Lee",
+        "Walker", "Hall", "Allen", "Young", "Hernandez", "King", "Wright", "Lopez",
+        "Hill", "Scott", "Green", "Adams", "Baker", "Gonzalez", "Nelson", "Carter",
+        "Mitchell", "Perez", "Roberts", "Turner", "Phillips", "Campbell", "Parker", "Evans",
+        "Edwards", "Collins", "Stewart", "Sanchez", "Morris", "Rogers", "Reed", "Cook"
+    };
+    static int count = sizeof(lastNames) / sizeof(lastNames[0]);
+    return lastNames[rand() % count];
+}
+
+// Generate a random M-number
+std::string generateRandomMNumber() {
+    std::string mNumber = "M";
+    for (int i = 0; i < 8; i++) {
+        mNumber += std::to_string(rand() % 10);
+    }
+    return mNumber;
+}
+
+// Function to populate the list with random student data
+void populateList(StudentLinkedList& list, int count) {
+    for (int i = 0; i < count; i++) {
+        std::string firstName = getRandomFirstName();
+        std::string lastName = getRandomLastName();
+        std::string mNumber = generateRandomMNumber();
+
+        Student student(firstName, lastName, mNumber);
+        list.add(student);
+    }
+}
+
+// Display the menu and get user selection
+int displayMenu() {
+    int choice;
+    std::cout << "\n======= Student Sorting Menu =======\n";
+    std::cout << "1. Sort by First Name (Ascending)\n";
+    std::cout << "2. Sort by First Name (Descending)\n";
+    std::cout << "3. Sort by Last Name (Ascending)\n";
+    std::cout << "4. Sort by Last Name (Descending)\n";
+    std::cout << "5. Sort by MNumber (Ascending)\n";
+    std::cout << "6. Sort by MNumber (Descending)\n";
+    std::cout << "7. Display Students\n";
+    std::cout << "8. Exit\n";
+    std::cout << "Enter your choice: ";
+    std::cin >> choice;
+    return choice;
+}
+
+int main() {
+    // Seed the random number generator
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    // Create a new linked list
+    StudentLinkedList list;
+
+    // Populate the list with 50 random students
+    std::cout << "Populating list with 50 random students...\n";
+    populateList(list, 50);
+
+    // Display initial list
+    std::cout << "\nInitial Student List:\n";
+    list.display();
+
+    // Menu loop
+    int choice;
+    do {
+        choice = displayMenu();
+
+        switch (choice) {
+        case 1:
+            std::cout << "\nSorting by First Name (Ascending)...\n";
+            list.sortByFirstName(true);
+            list.display();
+            break;
+        case 2:
+            std::cout << "\nSorting by First Name (Descending)...\n";
+            list.sortByFirstName(false);
+            list.display();
+            break;
+        case 3:
+            std::cout << "\nSorting by Last Name (Ascending)...\n";
+            list.sortByLastName(true);
+            list.display();
+            break;
+        case 4:
+            std::cout << "\nSorting by Last Name (Descending)...\n";
+            list.sortByLastName(false);
+            list.display();
+            break;
+        case 5:
+            std::cout << "\nSorting by MNumber (Ascending)...\n";
+            list.sortByMNumber(true);
+            list.display();
+            break;
+        case 6:
+            std::cout << "\nSorting by MNumber (Descending)...\n";
+            list.sortByMNumber(false);
+            list.display();
+            break;
+        case 7:
+            std::cout << "\nDisplaying Students:\n";
+            list.display();
+            break;
+        case 8:
+            break;
+        default:
+            std::cout << "\nInvalid choice. Please try again.\n";
+        }
+    } while (choice != 8);
+
+    return 0;
+}
